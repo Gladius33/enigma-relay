@@ -1,0 +1,39 @@
+[package]
+name = "enigma-relay"
+version = "0.0.1"
+edition = "2021"
+license = "MIT"
+authors = ["Sébastien TOUILLEUX (Gladius33)"]
+description = "Offline store-and-forward relay for Enigma using opaque E2EE envelopes (push/pull/ack) with TTL and paging."
+repository = "https://github.com/Gladius33/enigma-relay"
+homepage = "https://github.com/Gladius33/enigma-relay"
+documentation = "https://docs.rs/enigma-relay"
+readme = "README.md"
+keywords = ["relay", "offline", "store-and-forward", "e2ee", "enigma"]
+categories = ["network-programming"]
+rust-version = "1.75"
+include = ["src/**", "docs/**", "README.md", "LICENSE", "Cargo.toml", ".gitignore"]
+
+[features]
+default = ["sled-backend"]
+sled-backend = ["dep:sled"]
+
+[dependencies]
+async-trait = "0.1"
+thiserror = "1"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "sync"] }
+axum = "0.7"
+tower = "0.5"
+tower-http = { version = "0.6", features = ["timeout", "trace"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+uuid = { version = "1", features = ["serde", "v4"] }
+base64 = "0.22"
+enigma-node-types = { path = "../enigma-node-types", version = "0.0.1" }
+futures = "0.3"
+
+sled = { version = "0.34", optional = true }
+
+[dev-dependencies]
+reqwest = { version = "0.12", features = ["json", "rustls-tls"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time"] }

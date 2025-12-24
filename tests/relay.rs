@@ -81,6 +81,21 @@ fn ids(items: &[DeliveryItem]) -> Vec<Uuid> {
     items.iter().map(|i| i.message_id).collect()
 }
 
+#[tokio::test(flavor = "multi_thread")]
+async fn tokio_test_runtime_starts_server() {
+    let cfg = memory_config();
+    let running = start(cfg).await.unwrap();
+    let client = Client::new();
+    let resp = client
+        .get(format!("{}/health", running.base_url))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(resp.status(), 200);
+    let _ = running.shutdown.send(());
+    let _ = running.handle.await;
+}
+
 #[actix_rt::test]
 async fn push_then_pull_returns_items_in_order() {
     let cfg = memory_config();

@@ -149,7 +149,7 @@ pub async fn start_with_store(store: DynRelayStore, cfg: RelayConfig) -> Result<
     let gc_task = tokio::spawn(async move { run_gc(gc_store, gc_limits, gc_signal).await });
     let (server, addr) = build_server(state, &cfg)?;
     let handle = server.handle();
-    let server_task = actix_web::rt::spawn(server);
+    let server_task = tokio::spawn(server);
     let joined = tokio::spawn(async move {
         let _ = shutdown_signal.await;
         handle.stop(true).await;
